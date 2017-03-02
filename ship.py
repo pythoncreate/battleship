@@ -2,12 +2,12 @@ class Ship():
 
     def __init__ (self, ship_name, size, player):
         self.ship_name = ship_name
-        self.size =size
+        self.size = size
         self.player = player
 
     def get_ship_location(self):
         while True:
-            ship_location = input(" please place your" + self.ship_name + "("+ self.size + " spaces--example (A2): ")
+            ship_location = input('Please place your' + self.ship_name + '(' + str(self.size) + ' spaces--example (A2): ')
             ship_location_strip = ship_location.strip()
             lower_ship_location = ship_location_strip.lower()
 
