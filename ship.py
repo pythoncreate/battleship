@@ -1,3 +1,5 @@
+BOARD_SIZE = 10
+
 class Ship:
 
     def __init__(self, ship_name, size, coordinates, direction):
@@ -9,17 +11,41 @@ class Ship:
 
 class Board:
 
-    def __init__(self, size=10):
-        """initialize board to correct size"""
+    def __init__(self, board):
         self.size = size
-        self.grid = []
-        # Add 'size' number of rows
-        for row in range(self.size):
-            # Add 'size' number of Locations per row
-            new_row = []
-            for col in range(self.size):
-                new_row.append(Location(offset_to_coord(row, col)))
-            self.grid.append(new_row)
+        self.board = board
+
+    def print_board_heading(self):
+        print("   " + " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)]))
+
+
+    def print_board(self):
+        board = [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
+        print_board_heading()
+        row_num = 1
+        for row in board:
+            print(str(row_num).rjust(2) + " " + (" ".join(row)))
+            row_num += 1
+
+    def print_updated_board(self, coords, direction, board):
+        # create an empty board
+        # board = [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
+        # at each coordinate, draw a ship
+        board = []
+        for coord in coords:
+            # convert string like "a1" to x,y coordinates
+            y = ord(coord[0])-ord('a')
+            x = int(coord[1:])-1
+            # update the board at this position
+            board[x][y] = '|' if direction == 'v' else '-'
+        print_board_heading()
+        row_num = 1
+        for row in board:
+            print(str(row_num).rjust(2) + " " + (" ".join(row)))
+            row_num += 1
+
+
+
 
 
 class Player:

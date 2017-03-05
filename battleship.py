@@ -17,34 +17,45 @@ MISS = '.'
 HIT = '*'
 SUNK = '#'
 
-#setup a blank board 10x10
-board = []
-for row in range(10):
-    board_row = []
-    for j in range(10):
-        board_row.append(EMPTY)
-    board.append(board_row)
-
-
-def clear_screen():
-    print("\033c", end="")
-
+board = [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
 
 def print_board_heading():
     print("   " + " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)]))
 
 
-def print_board(board):
+def print_board():
+    board = [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
     print_board_heading()
+    row_num = 1
+    for row in board:
+        print(str(row_num).rjust(2) + " " + (" ".join(row)))
+        row_num += 1
 
+def print_updated_board(coords, direction,board):
+    # create an empty board
+    # board = [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
+    # at each coordinate, draw a ship
+
+    for coord in coords:
+        # convert string like "a1" to x,y coordinates
+        y = ord(coord[0])-ord('a')
+        x = int(coord[1:])-1
+        # update the board at this position
+        board[x][y] = '|' if direction == 'v' else '-'
+    print_board_heading()
     row_num = 1
     for row in board:
         print(str(row_num).rjust(2) + " " + (" ".join(row)))
         row_num += 1
 
 
+def clear_screen():
+    print("\033c", end="")
+
+
 def get_coordinates(ship):
     while True:
+        print("\n")
         coordinate = input("Where do you want the " + ship + "(example: A1)?: ")
         coords_strip = coordinate.strip()
         coords_lower = coords_strip.lower()
@@ -80,8 +91,8 @@ def get_direction():
 
 
 def create_ship_coordinates(x, y, size, direction):
-    ship_col = int(y)
-    ship_row = ord(x)
+    ship_col = ord(x)
+    ship_row = int(y)
     if direction == 'v':
         # ship runs vertically DOWN from coordinate
         coords = [chr(ship_col) + str(r) for r in range(ship_row, ship_row + size)]
@@ -92,22 +103,22 @@ def create_ship_coordinates(x, y, size, direction):
         return coords
 
 
-
 def place_user_ships(player):
     ships = []
+    print_board()
+    print("\n")
+    print("Let's go " + player + " !")
     for ship, size in SHIP_INFO:
-        print_board(board)
 
         while True:
-            print("Placing the " + ship)
             # ask for starting coordinate
             x, y = get_coordinates(ship)
             # ask for vertical or horizontal direction
             direction = get_direction()
             # create the coordinates for the ship placement
             coords = create_ship_coordinates(x, y, size, direction)
-            print(coords)
-            # validate the placement
+            # validate the
+            print_updated_board(coords,direction,board)
             break
         # create ship from data
         ship = Ship(ship, size, coords, direction)
@@ -115,7 +126,7 @@ def place_user_ships(player):
         # place the ship on the game board
         # print out the board to reflect the shp placement
     clear_screen()
-    print("Placing ships for {}:\n".format(player))
+    print("\n")
     input("All ships placed for {}. Please hit ENTER to continue....".format(player))
     clear_screen()
 
@@ -124,4 +135,5 @@ player2 = input("What's Player 2's Name? ")
 
 # define player one's fleet
 place_user_ships(player1)
+place_user_ships(player2)
 
