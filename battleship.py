@@ -1,4 +1,4 @@
-from ship import Ship, Player
+from ship import Ship, Player, Board
 
 SHIP_INFO = [
     ("Aircraft Carrier", 5),
@@ -118,17 +118,17 @@ def place_user_ships(player):
             # create the coordinates for the ship placement
             coords = create_ship_coordinates(x, y, size, direction)
             # validate the
-            print_updated_board(coords,direction,board)
+            new_ship = Board().add_ship(ship, size, coords, direction, player)
+            update = Board.print_updated_board(coords,direction,board,player)
             break
         # create ship from data
-        ship = Ship(ship, size, coords, direction)
         # add the ship from above to a player list
+        # player = Player(board)
         # place the ship on the game board
         # print out the board to reflect the shp placement
     clear_screen()
     print("\n")
     input("All ships placed for {}. Please hit ENTER to continue....".format(player))
-    clear_screen()
 
 player1 = input("What's Player 1's Name? ")
 player2 = input("What's Player 2's Name? ")
