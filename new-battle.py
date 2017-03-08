@@ -10,7 +10,6 @@ SHIP_INFO = [
 ]
 
 class Ship:
-
     def __init__(self, ship_name, size, coords, player, direction):
         self.ship_name = ship_name
         self.size = size
@@ -95,6 +94,7 @@ class Player():
                 return direction
 
     def create_ship_coordinates(self, x, y, size, direction):
+        board = []
         ship_col = ord(x)
         ship_row = int(y)
         if direction == 'v':

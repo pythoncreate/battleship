@@ -1,7 +1,4 @@
-from game.board import Board
-from game.player import Player
-from game.ship import Ship
-from game.game import Game
+from ship import Ship, Player, Board, Game
 
 SHIP_INFO = [
     ("Aircraft Carrier", 5),
@@ -20,7 +17,7 @@ MISS = '.'
 HIT = '*'
 SUNK = '#'
 
-
+board = [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
 
 def print_board_heading():
     print("   " + " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)]))
@@ -56,27 +53,27 @@ def clear_screen():
     print("\033c", end="")
 
 
-# def get_coordinates(ship):
-#     while True:
-#         print("\n")
-#         coordinate = input("Where do you want the " + ship + "(example: A1)?: ")
-#         coords_strip = coordinate.strip()
-#         coords_lower = coords_strip.lower()
-#         x = coords_lower[0]
-#         y = coords_lower[1:]
-#
-#         if (len(x)+len(y)) in range(2,4):
-#             if x not in 'abcdefghij' or y not in '1,2,3,4,5,6,7,8,9,10':
-#                 print("Oops!  That was not a valid entry.  Try again...")
-#                 continue
-#
-#             else:
-#                 return x, y
-#
-#         else:
-#             if len(coords_lower) < 2 or len(coords_lower) > 3:
-#                 print("Oops!  That's too not the right amount of characters. Please try again...")
-#                 continue
+def get_coordinates(ship):
+    while True:
+        print("\n")
+        coordinate = input("Where do you want the " + ship + "(example: A1)?: ")
+        coords_strip = coordinate.strip()
+        coords_lower = coords_strip.lower()
+        x = coords_lower[0]
+        y = coords_lower[1:]
+
+        if (len(x)+len(y)) in range(2,4):
+            if x not in 'abcdefghij' or y not in '1,2,3,4,5,6,7,8,9,10':
+                print("Oops!  That was not a valid entry.  Try again...")
+                continue
+
+            else:
+                return x, y
+
+        else:
+            if len(coords_lower) < 2 or len(coords_lower) > 3:
+                print("Oops!  That's too not the right amount of characters. Please try again...")
+                continue
 
 
 def get_direction():
@@ -135,51 +132,9 @@ def place_user_ships(player):
 
 # player1 = input("What's Player 1's Name? ")
 # player2 = input("What's Player 2's Name? ")
-
+#
 # # define player one's fleet
 # place_user_ships(player1)
 # place_user_ships(player2)
 
-
-
-if __name__ == '__main__':
-    grid = [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
-    player1 = Player()
-    player2 = Player()
-    grid1 = Board(grid)
-    grid2 = Board(grid)
-    grid1.print_board()
-    chris =[]
-
-    for ship_name, ship_size in SHIP_INFO:
-        ship1 = Ship(player1,ship_name,ship_size,grid1) #create ship instance
-        ask_coords = ship1.ask_ship_coords(ship_name) #ask user for starting coordinate for ship in form "A1"
-        x,y = ship1.split_coordinates(ask_coords) #split coordinate from above into x, y variables and check if valid
-        direction = ship1.ask_ship_location() # ask for ship's postion --horizontal or vertical
-        created_coords = ship1.create_ship_coordinates(x, y, ship_size, direction) # create all coordinates for ship based on size of ship and location
-        chris.append(created_coords) #add coords to list to test out --not part of final code
-        grid1.print_ship_coordinates(created_coords, direction, grid) #loop through coords for ship to print out on displayed grid
-
-    for ship_name, ship_size in SHIP_INFO:
-        grid = [['O'] * BOARD_SIZE for _ in range(BOARD_SIZE)]
-        ship2 = Ship(player2,ship_name,ship_size,grid2) #create ship instance
-        ask_coords = ship2.ask_ship_coords(ship_name) #ask user for starting coordinate for ship in form "A1"
-        x,y = ship2.split_coordinates(ask_coords) #split coordinate from above into x, y variables and check if valid
-        direction = ship2.ask_ship_location() # ask for ship's postion --horizontal or vertical
-        created_coords = ship2.create_ship_coordinates(x, y, ship_size, direction) # create all coordinates for ship based on size of ship and location
-        chris.append(created_coords) #add coords to list to test out --not part of final code
-        grid2.print_ship_coordinates(created_coords, direction, grid) #loop through coords for ship to print out on displayed grid
-
-
-
-    print(chris)
-    # ship1 = Ship(player1)
-    # ship1 = Ship(player2)
-    # ship1.ask_ship_location()
-    # ship1 = Ship(player1,coords)
-    # # board.check_coordinates(coords)
-    # print("Great nice work {}!".format(player1.name))
-    # print("Let's go {}".format(player2.name))
-    #
-    #
-    # print(player1.board)
+battleship = Game()
