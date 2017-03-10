@@ -20,27 +20,29 @@ class Ship:
         location = input("Guess a location: ")
         return location
 
-    def split_coordinates(self, coords):
+    def split_coordinates(self,ship_name):
         while True:
-            coord_strip = coords.strip()
-            coord_lower = coord_strip.lower()
-            x = coord_lower[0]
-            y = coord_lower[1:]
+            print("\n")
+            coordinate = input("Where do you want the " + ship_name + "(example: A1)?: ")
+            coords_strip = coordinate.strip()
+            coords_lower = coords_strip.lower()
+            x = coords_lower[0]
+            y = coords_lower[1:]
 
             if (len(x) + len(y)) in range(2, 4):
                 if x not in 'abcdefghij' or y not in '1,2,3,4,5,6,7,8,9,10':
-                    print("Oops!  That was not a valid entry.  Try again...")
+                    print("Sorry the Grid is a 10x10 square you must enter a valid position.  Try again...")
                     continue
 
                 else:
                     return x, y
 
             else:
-                if len(coord_lower) < 2 or len(coord_lower) > 3:
+                if len(coords_lower) < 2 or len(coords_lower) > 3:
                     print("Oops!  That's too not the right amount of characters. Please try again...")
                     continue
 
-    def create_ship_coordinates(self, x, y, ship_size, direction):
+    def create_ship_coordinates(self, x, y, ship_size, direction,grid):
         grid = []
         ship_col = ord(x)
         ship_row = int(y)
