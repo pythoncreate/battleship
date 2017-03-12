@@ -1,7 +1,8 @@
 BOARD_SIZE = 10
 
 class Board:
-    board = []
+    play_one_board = []
+    play_two_board = []
 
     def __init__(self):
         self.grid = self.initalize_board()
@@ -30,14 +31,14 @@ class Board:
             print(str(row_num).rjust(2) + " " + (" ".join(row)))
             row_num += 1
 
-    def guess_board(self,x,y):
+    def guess_board(self,x,y,grid):
+        self.grid= [['O'] * BOARD_SIZE for _ in range(BOARD_SIZE)]
         col = ord(x[0]) - ord('a')
         row = int(y) - 1
-        self.grid = self.initalize_board()
-        self.grid[row][col] = '*'
+        grid[row][col] = '*'
         print("   " + " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)]))
         row_num = 1
-        for row in self.grid:
+        for row in grid:
             print(str(row_num).rjust(2) + " " + (" ".join(row)))
             row_num += 1
 
