@@ -3,8 +3,8 @@ BOARD_SIZE = 10
 class Board:
     board = []
 
-    def __init__(self, grid):
-        self.grid = [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
+    def __init__(self):
+        self.grid = self.initalize_board()
 
     def print_board(self):
         print("   " + " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)]))
@@ -12,6 +12,9 @@ class Board:
         for row in self.grid:
             print(str(row_num).rjust(2) + " " + (" ".join(row)))
             row_num += 1
+
+    def initalize_board(self):
+        return [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
 
     def print_ship_coordinates(self,created_coords,direction,grid):
         self.grid = []
@@ -24,6 +27,17 @@ class Board:
         print("   " + " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)]))
         row_num = 1
         for row in grid:
+            print(str(row_num).rjust(2) + " " + (" ".join(row)))
+            row_num += 1
+
+    def guess_board(self,x,y):
+        col = ord(x[0]) - ord('a')
+        row = int(y) - 1
+        self.grid = self.initalize_board()
+        self.grid[row][col] = '*'
+        print("   " + " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)]))
+        row_num = 1
+        for row in self.grid:
             print(str(row_num).rjust(2) + " " + (" ".join(row)))
             row_num += 1
 

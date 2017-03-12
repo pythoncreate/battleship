@@ -3,12 +3,14 @@ from game.player import Player
 from game.ship import Ship
 from game.game import Game
 
+from itertools import cycle
+
 SHIP_INFO = [
     ("Aircraft Carrier", 5),
     ("Battleship", 4),
-    ("Submarine", 3),
-    ("Cruiser", 3),
-    ("Patrol Boat", 2)
+    # ("Submarine", 3),
+    # ("Cruiser", 3),
+    # ("Patrol Boat", 2)
 ]
 
 BOARD_SIZE = 10
@@ -140,14 +142,14 @@ SUNK = '#'
 # # place_user_ships(player1)
 # # place_user_ships(player2)
 
-
-
+#
+#
 if __name__ == '__main__':
     grid = [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
     player1 = Player()
     player2 = Player()
-    grid1 = Board(grid)
-    grid2 = Board(grid)
+    grid1 = Board()
+    grid2 = Board()
     grid1.print_board()
     chris =[]
 
@@ -159,40 +161,72 @@ if __name__ == '__main__':
         created_coords = ship1.create_ship_coordinates(x, y, ship_size, direction,grid) # create all coordinates for ship based on size of ship and locatio
         #add coordinates to player's grid
         grid1.board.append(created_coords)
-
+#
         grid1.print_ship_coordinates(created_coords, direction,grid) #loop through coords for ship to print out on displayed grid
 
 
-    # print("Great work {}!  Now it's time for {} to place their ships!".format(player1.player,player2.player))
-    # print("\n")
-    # grid = [['O'] * BOARD_SIZE for _ in range(BOARD_SIZE)]
-    # grid1.print_board()
+    print("Great work {}!  Now it's time for {} to place their ships!".format(player1.player,player2.player))
+    print("\n")
+    grid = [['O'] * BOARD_SIZE for _ in range(BOARD_SIZE)]
+    grid1.print_board()
 
-    # for ship_name, ship_size in SHIP_INFO:
-    #     ship2 = Ship(player2,ship_name,ship_size,grid2) #create ship instance
-    #     # ask_coords = ship2.ask_ship_coords(ship_name) #ask user for starting coordinate for ship in form "A1"
-    #     x,y = ship2.split_coordinates(ship_name) #split coordinate from above into x, y variables and check if valid
-    #     direction = ship2.ask_ship_location() # ask for ship's postion --horizontal or vertical
-    #     created_coords = ship2.create_ship_coordinates(x, y, ship_size, direction) # create all coordinates for ship based on size of ship and location
-    #     chris.append(created_coords) #add coords to list to test out --not part of final code
-    #     grid2.print_ship_coordinates(created_coords, direction, grid) #loop through coords for ship to print out on displayed grid
-    #
-    # print("great thanks {}!  Let's play battleship!".format(player2.player))
+    for ship_name, ship_size in SHIP_INFO:
+        ship2 = Ship(player2,ship_name,ship_size,grid2) #create ship instance
+        # ask_coords = ship2.ask_ship_coords(ship_name) #ask user for starting coordinate for ship in form "A1"
+        x,y = ship2.split_coordinates(ship_name) #split coordinate from above into x, y variables and check if valid
+        direction = ship2.ask_ship_location() # ask for ship's postion --horizontal or vertical
+        created_coords = ship2.create_ship_coordinates(x, y, ship_size, direction,grid) # create all coordinates for ship based on size of ship and location
+        grid2.board.append(created_coords) #add coords to list to test out --not part of final code
+        grid2.print_ship_coordinates(created_coords, direction, grid) #loop through coords for ship to print out on displayed grid
 
-    print(grid1.board)
+    print("great thanks {}!  Let's play battleship!".format(player2.player))
 
-    guesses = 0
-    guess_ships = grid1.board
-    while guesses < 5:
-        guess = input("Guess a spot on the grid (example A10:")
-        guesses += 1
-        if any(guess in ship for ship in guess_ships):
-            print("BOOM that's a HIT!")
-            guess_ships.remove(guess)
-            for ship in guess_ships:
-                if not ship:
-                    print("YOU SUNK MY BATTLESHIP!!")
-                else:
-                    continue
-        else:
-            print("Sorry you missed.")
+
+
+def check_if_sunk():
+    if not ship:
+        print("YOU SUNK MY BATTLESHIP!!")
+
+guesses = 0
+
+while len(grid1.board) and len(grid2.board) > 0:
+    guess = input("{}'s turn to guess".format(player1.player))
+    player1.guesses.append(guess)
+    x, y = ship1.split_guess(guess)
+    guesses += 1
+    if any(guess in ship for ship in grid2.board):
+        print("HIT")
+        grid1.guess_board(x, y)
+        for ship in grid2.board:
+            try:
+                ship.remove(guess)
+                print(grid2.board)
+                check_if_sunk()
+            except ValueError:
+                pass
+    else:
+        print("Miss!")
+
+    guess2 = input("{}'s turn to guess".format(player2.player))
+    player2.guesses.append(guess2)
+    x, y = ship2.split_guess(guess2)
+    guesses += 1
+    if any(guess2 in ship for ship in grid1.board):
+        print("HIT")
+        grid2.guess_board(x, y)
+        for ship in grid1.board:
+            try:
+                ship.remove(guess2)
+                print(grid1.board)
+                check_if_sunk()
+            except ValueError:
+                pass
+    else:
+        print("Miss!")
+
+else:
+    if (len(grid1.board) == 0):
+        print("{} YOU ARE THE WINNER! CONGRATULATIONS!".format(player1.player))
+
+    elif (len(grid2.board) == 0):
+        print("{} YOU ARE THE WINNER! CONGRATULATIONS!".format(player2.player))

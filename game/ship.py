@@ -20,6 +20,13 @@ class Ship:
         location = input("Guess a location: ")
         return location
 
+    def split_guess(self, guess):
+        guess_strip = guess.strip()
+        guess_lower = guess_strip.lower()
+        x = guess_lower[0]
+        y = guess_lower[1:]
+        return x,y
+
     def split_coordinates(self,ship_name):
         while True:
             print("\n")
