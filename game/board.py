@@ -6,6 +6,7 @@ class Board:
 
     def __init__(self):
         self.grid = self.initalize_board()
+        self.play_board = [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
 
     def print_board(self):
         print("   " + " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)]))
@@ -17,28 +18,64 @@ class Board:
     def initalize_board(self):
         return [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
 
-    def print_ship_coordinates(self,created_coords,direction,grid):
-        self.grid = []
+    def clear_grid(self):
+        self.grid = [['O']*BOARD_SIZE for _ in range(BOARD_SIZE)]
+
+    def _set_index_coords(self,x,y):
+        col = ord(x[0]) - ord('a')
+        row = int(y) - 1
+        return [col, row]
+
+    def create_grid_markers(self, c, x, y, row, col):
+        if c == "m":
+            self.grid[row][col] = "."
+        elif c == 'h':
+            self.grid[row][col] = "*"
+        elif c == 's':
+            self.grid[row][col] = "!"
+
+    def print_ship_coordinates(self,created_coords,direction):
         # convert string like "a1" to x,y coordinates
         for coord in created_coords:
             y = ord(coord[0]) - ord('a')
             x = int(coord[1:]) - 1
             # update the board at this position
-            grid[x][y] = '|' if direction == 'v' else '-'
+            self.grid[x][y] = '|' if direction == 'v' else '-'
         print("   " + " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)]))
         row_num = 1
-        for row in grid:
+        for row in self.grid:
             print(str(row_num).rjust(2) + " " + (" ".join(row)))
             row_num += 1
 
-    def guess_board(self,x,y,grid):
-        self.grid= [['O'] * BOARD_SIZE for _ in range(BOARD_SIZE)]
-        col = ord(x[0]) - ord('a')
-        row = int(y) - 1
-        grid[row][col] = '*'
+    def create_grid_markers_for_my_board(self, c, x, y, row, col):
+        if c == "m":
+            self.grid[row][col] = "."
+        elif c == 'h':
+            self.grid[row][col] = "*"
+        elif c == 's':
+            self.grid[row][col] = "!"
+
+    def update_my_ship_board(self, x, y, c):
+        # self.grid= [['O'] * BOARD_SIZE for _ in range(BOARD_SIZE)]
+        col, row = self._set_index_coords(x,y)
+        self.create_grid_markers_for_my_board(c,x,y,row,col)
+
+    def print_my_ship_board(self,player):
+        print("{}'s SHIP BOARD".format(player))
         print("   " + " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)]))
         row_num = 1
-        for row in grid:
+        for row in self.grid:
+            print(str(row_num).rjust(2) + " " + (" ".join(row)))
+            row_num += 1
+
+    def print_guess_board(self, x, y, c,player):
+        # self.grid= [['O'] * BOARD_SIZE for _ in range(BOARD_SIZE)]
+        col, row = self._set_index_coords(x,y)
+        self.create_grid_markers(c,x,y,row,col)
+        print("{}'s GUESS BOARD".format(player))
+        print("   " + " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)]))
+        row_num = 1
+        for row in self.grid:
             print(str(row_num).rjust(2) + " " + (" ".join(row)))
             row_num += 1
 
@@ -49,6 +86,6 @@ class Board:
             col = ord(coord[0]) - ord('A')
             row = int(coord[1:]) - 1
             return (row, col)
-            if grid[row][col].ship:
+            if self.grid[row][col].ship:
                     result = False
         return result
