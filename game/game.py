@@ -57,25 +57,19 @@ class Game:
             print("YOU SUNK MY BATTLESHIP!!")
 
     def play_one_win_check(self,player):
+        win = 0
         for ship in Board.play_two_board:
-            win = 0
             if len(ship) == 0:
-                print("{} YOU ARE THE WINNER! CONGRATULATIONS!".format(player))
-                win = 1
-                return win
-                break
-            else:
-                continue
+                win += 1
+        return win
 
     def play_two_win_check(self,player):
+        win = 0
         for ship in Board.play_one_board:
             if len(ship) == 0:
-                print("{} YOU ARE THE WINNER! CONGRATULATIONS!".format(player))
-                return True
-                break
-            else:
-                return False
-                continue
+                win += 1
+        return win
+
 
     def run(self):
         BOARD_SIZE = 10
@@ -99,19 +93,27 @@ class Game:
 
         # loop function to get, create and display player one's ships
 
+
         for ship_name, ship_size in Game.SHIP_INFO:
             # create ship instance
             ship1 = Ship(player1, ship_name, ship_size)
-            # ask user for starting coordinate for ship in form "A1" and split into x,y variables
-            x, y = ship1.split_coordinates(ship_name,player1.player)
-            # ask user for ship's position --horizontal or vertical
-            direction = ship1.ask_ship_location()
-            # create all coordinates for ship based on size of ship and location
-            created_coords = ship1.create_ship_coordinates(x, y, ship_size,direction)
-            # add coordinates to player's grid
+            ship_exists = True
+            while ship_exists:
+                # ask user for starting coordinate for ship in form "A1" and split into x,y variables
+                x, y = ship1.split_coordinates(ship_name,player1.player)
+                # ask user for ship's position --horizontal or vertical
+                direction = ship1.ask_ship_location()
+                # create all coordinates for ship based on size of ship and location
+                created_coords = ship1.create_ship_coordinates(x, y, ship_size,direction)
+                # check to see if ship already on board
+                valid_coords = ship1.valid_coords(created_coords, grid1.play_one_board)
+                if not valid_coords:
+                    print("Sorry you already have a ship in that location")
+                else:
+                    break
             grid1.play_one_board.append(created_coords)
             # loop through coords for ship to print out on displayed grid
-            grid1.print_ship_coordinates(created_coords,direction)
+            grid1.print_ship_coordinates(created_coords, direction)
 
         print("Great work {}!  Now it's time for {} to place their ships!".format(player1.player, player2.player))
         print("\n")
@@ -124,12 +126,20 @@ class Game:
         for ship_name, ship_size in Game.SHIP_INFO:
             # create ship instance
             ship2 = Ship(player2, ship_name, ship_size)
-            # ask user for starting coordinate for ship in form "A1" and split into x,y variables
-            x, y = ship2.split_coordinates(ship_name,player2.player)
-            # ask user for ship's position --horizontal or vertical
-            direction = ship2.ask_ship_location()
-            # create all coordinates for ship based on size of ship and location
-            created_coords_2 = ship2.create_ship_coordinates(x, y, ship_size,direction)
+            ship_exists = True
+            while ship_exists:
+                # ask user for starting coordinate for ship in form "A1" and split into x,y variables
+                x, y = ship2.split_coordinates(ship_name,player2.player)
+                # ask user for ship's position --horizontal or vertical
+                direction = ship2.ask_ship_location()
+                # create all coordinates for ship based on size of ship and location
+                created_coords_2 = ship2.create_ship_coordinates(x, y, ship_size,direction)
+                # check to see if ship already on board
+                valid_coords = ship2.valid_coords(created_coords_2, grid2.play_two_board)
+                if not valid_coords:
+                    print("Sorry you already have a ship in that location")
+                else:
+                    break
             # add coordinates to player's grid
             grid2.play_two_board.append(created_coords_2)
             # loop through coords for ship to print out on displayed grid
@@ -183,8 +193,8 @@ class Game:
                         self.check_if_sunk(ship)
                         # check if player one is winner
                         win = self.play_one_win_check(player1.player)
-                        if win == 1:
-                            print ("GAVE OVER!")
+                        if win == 5:
+                            print("GAVE OVER! {} is the winner!".format(player1.player))
                             break
                     except ValueError:
                         pass
@@ -235,9 +245,13 @@ class Game:
                         self.check_if_sunk(ship)
                         # check if player two is winner
                         win = self.play_two_win_check(player2.player)
-                        if win == 1:
-                            print("GAVE OVER!")
+                        print(win)
+                        print(len(ship))
+                        if win == 5:
+                            print("GAVE OVER! {} is the winner!".format(player2.player))
                             break
+                        else:
+                            continue
                     except ValueError:
                         pass
             else:

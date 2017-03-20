@@ -32,6 +32,13 @@ class Ship:
         y = guess_lower[1:]
         return x,y
 
+    def valid_coords(self, coords, player_board):
+        for ship in player_board:
+            for coord in coords:
+                if coord in ship:
+                    return False
+        return True
+
     def validate_guess(self):
         guess = input("Please enter a location:")
         while True:
@@ -58,8 +65,8 @@ class Ship:
             y = coords_lower[1:]
             self.clear_screen()
 
-            if (len(x) + len(y)) in range(2, 4):
-                if x not in 'abcdefghij' or y not in '1,2,3,4,5,6,7,8,9,10':
+            if (len(x+str(y))) in range(2, 4):
+                if x not in 'abcdefghij' or int(y) not in range(1,11):
                     print("Sorry the Grid is a 10x10 square you must enter a valid position.  Try again...")
                     continue
 
